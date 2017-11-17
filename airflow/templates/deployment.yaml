@@ -1,0 +1,102 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "airflow.fullname" . }}
+  labels:
+    app: {{ template "airflow.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "airflow.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: airflow-configmap
+            mountPath: /root/airflow/airflow.cfg
+            subPath: airflow.cfg
+          - name: airflow-dags
+            mountPath: /root/airflow/dags
+          env:
+          - name: SQL_ALCHEMY_CONN
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: sql_alchemy_conn
+          command:
+            - "bash"
+          args:
+            - "-cx"
+            - "cd /usr/local/lib/python2.7/dist-packages/airflow && cp -R example_dags/* /root/airflow/dags/ && airflow initdb && alembic upgrade head"
+        - name: {{ .Chart.Name }}-web
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+              name: http
+          args: ["webserver"]
+          env:
+          - name: AIRFLOW_KUBE_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: SQL_ALCHEMY_CONN
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: sql_alchemy_conn
+          volumeMounts:
+          - name: airflow-configmap
+            mountPath: /root/airflow/airflow.cfg
+            subPath: airflow.cfg
+          - name: airflow-dags
+            mountPath: /root/airflow/dags
+          livenessProbe:
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 5
+            httpGet:
+              path: /admin
+              port: {{ .Values.service.internalPort }}
+          readinessProbe:
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 5
+            httpGet:
+              path: /admin
+              port: {{ .Values.service.internalPort }}
+        - name: {{ .Chart.Name }}-scheduler
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["scheduler"]
+          env:
+          - name: AIRFLOW_KUBE_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: SQL_ALCHEMY_CONN
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: sql_alchemy_conn
+          volumeMounts:
+          - name: airflow-configmap
+            mountPath: /root/airflow/airflow.cfg
+            subPath: airflow.cfg
+          - name: airflow-dags
+            mountPath: /root/airflow/dags
+          volumes:
+          - name: airflow-dags
+            persistentVolumeClaim:
+              claimName: airflow-dags
+          - name: airflow-configmap
+            configMap:
+              name: airflow-configmap
