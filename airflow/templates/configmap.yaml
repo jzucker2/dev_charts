@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{template "fullname" . }}-configmap
+  name: airflow-configmap
 data:
   airflow.cfg: |
     [core]
@@ -20,13 +20,13 @@ data:
     child_process_log_directory = /root/airflow/logs/scheduler
 
     [kubernetes]
-    airflow_configmap = {{ template "fullname" . }}-configmap
+    airflow_configmap = airflow-configmap
     worker_container_repository = {{ .Values.image.repository }}
     worker_container_tag = {{ .Values.image.tag }}
     delete_worker_pods = True
     git_repo = {{ .Values.git.repo }}
     git_branch = {{ .Values.git.branch}}
-    dags_volume_claim = {{ template "fullname" . }}-dags
+    dags_volume_claim = {{ template "airflow.fullname" . }}-dags
 
     [kubernetes_secrets]
     SQL_ALCHEMY_CONN = airflow-secrets=sql_alchemy_conn

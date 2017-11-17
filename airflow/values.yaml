@@ -16,6 +16,8 @@ service:
   type: NodePort
   port: 8080
   externalPort: 30809
+ingress:
+  enabled: false
 persistence:
   enabled: true
   size: 1Gi
