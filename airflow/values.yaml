@@ -1,27 +1,44 @@
 # Default values for airflow.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-replicaCount: 1
 image:
   repository: airflow
   tag: ci
   pullPolicy: IfNotPresent
+
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+##
+# imagePullSecrets:
+#  - name: regsecret
+
+
 git:
   repo: "https://github.com/someone/somerepo.git"
   branch: "master"
+
+
 web:
-  externalPort: 8080
-  internalPort: 8080
+  containerPort: 8080
+
 service:
   type: NodePort
   port: 8080
   externalPort: 30809
+
+
 ingress:
   enabled: false
+
+
 persistence:
   enabled: true
   size: 1Gi
   storageClass: default
+
+
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little

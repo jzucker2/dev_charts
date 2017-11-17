@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: airflow-configmap
+  name: {{ template "airflow.fullname" . }}-configmap
 data:
   airflow.cfg: |
     [core]

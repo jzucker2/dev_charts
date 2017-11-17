@@ -40,7 +40,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            - containerPort: {{ .Values.web.containerPort }}
               name: http
           args: ["webserver"]
           env:
@@ -65,14 +65,14 @@ spec:
             failureThreshold: 5
             httpGet:
               path: /admin
-              port: {{ .Values.service.internalPort }}
+              port: {{ .Values.web.containerPort }}
           readinessProbe:
             initialDelaySeconds: 5
             timeoutSeconds: 5
             periodSeconds: 5
             httpGet:
               path: /admin
-              port: {{ .Values.service.internalPort }}
+              port: {{ .Values.web.containerPort }}
         - name: {{ .Chart.Name }}-scheduler
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -88,15 +88,15 @@ spec:
                 name: airflow-secrets
                 key: sql_alchemy_conn
           volumeMounts:
-          - name: airflow-configmap
+          - name: {{ template "airflow.fullname" . }}-configmap
             mountPath: /root/airflow/airflow.cfg
             subPath: airflow.cfg
-          - name: airflow-dags
+          - name: {{ template "airflow.fullname" . }}-dags
             mountPath: /root/airflow/dags
-        volumes:
-        - name: airflow-dags
-          persistentVolumeClaim:
-            claimName: {{template "airflow.fullname" .}}-dags
-        - name: airflow-configmap
-          configMap:
-            name: {{ template "airflow.fullname"}}-configmap
+      volumes:
+      - name: {{ template "airflow.fullname" . }}-dags
+        persistentVolumeClaim:
+          claimName: {{template "airflow.fullname" . }}-dags
+      - name: {{ template "airflow.fullname" . }}-configmap
+        configMap:
+          name: {{ template "airflow.fullname" . }}-configmap
