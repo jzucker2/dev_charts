@@ -20,10 +20,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
-          - name: airflow-configmap
+          - name: {{ template "airflow.fullname" . }}-configmap
             mountPath: /root/airflow/airflow.cfg
             subPath: airflow.cfg
-          - name: airflow-dags
+          - name: {{ template "airflow.fullname" . }}-dags
             mountPath: /root/airflow/dags
           env:
           - name: SQL_ALCHEMY_CONN
@@ -54,10 +54,10 @@ spec:
                 name: airflow-secrets
                 key: sql_alchemy_conn
           volumeMounts:
-          - name: airflow-configmap
+          - name: {{ template "airflow.fullname" . }}-configmap
             mountPath: /root/airflow/airflow.cfg
             subPath: airflow.cfg
-          - name: airflow-dags
+          - name: {{ template "airflow.fullname" . }}-dags
             mountPath: /root/airflow/dags
           livenessProbe:
             initialDelaySeconds: 5
@@ -100,3 +100,8 @@ spec:
       - name: {{ template "airflow.fullname" . }}-configmap
         configMap:
           name: {{ template "airflow.fullname" . }}-configmap
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+    {{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
+

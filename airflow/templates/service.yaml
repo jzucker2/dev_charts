@@ -11,7 +11,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      nodePort: {{ .Values.service.externalPort }}
+      # nodePort: {{ .Values.service.externalPort }}
       name: {{ .Values.service.name }}
   selector:
     app: {{ template "airflow.name" . }}

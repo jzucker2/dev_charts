@@ -2,16 +2,16 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 image:
-  repository: airflow
-  tag: ci
+  repository: artifactnub1-docker-local.jfrog.io/pubnub/pnairflow
+  tag: k8s
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
 ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
 ##
-# imagePullSecrets:
-#  - name: regsecret
+imagePullSecrets:
+  - name: regsecret
 
 
 git:
@@ -35,9 +35,10 @@ ingress:
 persistence:
   enabled: true
   size: 1Gi
-  storageClass: default
+  storageClass: gp2
 
-
+db:
+  sql_alchemy_conn: cG9zdGdyZXNxbCtwc3ljb3BnMjovL3Bvc3RncmVzcWw6bzhJejBsc1VLQ0BiaWxnaW5nLWVsZXBoYW50LXBvc3RncmVzcWw6NTQzMi9haXJmbG93Cg==
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
