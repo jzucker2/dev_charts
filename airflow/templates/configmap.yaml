@@ -10,7 +10,7 @@ data:
     dags_folder = /root/airflow/dags
     base_log_folder = /root/airflow/logs
     logging_level = INFO
-    executor = KubernetesExecutor
+    executor = LocalExecutor
     parallelism = 32
     plugins_folder = /root/airflow/plugins
     sql_alchemy_conn = $SQL_ALCHEMY_CONN
