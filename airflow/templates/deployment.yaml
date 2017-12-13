@@ -93,6 +93,10 @@ spec:
             subPath: airflow.cfg
           - name: {{ template "airflow.fullname" . }}-dags
             mountPath: /root/airflow/dags
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+  {{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       volumes:
       - name: {{ template "airflow.fullname" . }}-dags
       {{- if .Values.persistence.enabled }}
@@ -100,12 +104,8 @@ spec:
           claimName: {{ .Values.persistence.existingClaim | default (printf "%s-dags" (include "airflow.fullname" .)) }}
       {{- else }}
         emptyDir: {}
-      {{- end -}}
+      {{- end }}
       - name: {{ template "airflow.fullname" . }}-configmap
         configMap:
           name: {{ template "airflow.fullname" . }}-configmap
-      {{- if .Values.imagePullSecrets }}
-      imagePullSecrets:
-    {{ toYaml .Values.imagePullSecrets | indent 8 }}
-      {{- end }}
 
