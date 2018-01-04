@@ -15,13 +15,13 @@ imagePullSecrets:
 
 
 git:
-  repo: "https://github.com/grantnicholas/testdags.git"
-  # repo: "https://github.com/pubnub/caravan.git"
+  # repo: "https://github.com/grantnicholas/testdags.git"
+  repo: "https://github.com/pubnub/caravan.git"
   branch: "master"
-  # user: "jzucker2"
-  # password: "b89a1d2d1f50e9a53756a5c1c14c09dd23c2232a"
+  user: "jzucker2"
+  password: "211824037fac70c4070df7b390e0c0dad5a80900"
   # password: "incorrect"
-  # subpath: "dags"
+  subpath: "dags"
 
 
 web:
