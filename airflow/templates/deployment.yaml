@@ -28,20 +28,14 @@ spec:
           env:
             - name: GIT_SYNC_REPO
               value: {{ .Values.git.repo }}
-              # value: https://github.com/pubnub/caravan.git
             - name: GIT_SYNC_DEST
               value: checkedoutdags
-              # value: checkout
             - name: GIT_SYNC_ONE_TIME
               value: "true"
             - name: GIT_SYNC_USERNAME
               value: {{ .Values.git.user }}
-              # value: jzucker2
             - name: GIT_SYNC_PASSWORD
               value: {{ .Values.git.password }}
-              # value: 211824037fac70c4070df7b390e0c0dad5a80900
-            # - name: GIT_SYNC_ROOT
-            #   value: gittest
         - name: {{ .Chart.Name }}-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -65,22 +59,6 @@ spec:
             - "-cx"
             - "cd /usr/local/lib/python2.7/dist-packages/airflow && cp -R /checkout/checkedoutdags/dags/* /root/airflow/dags/ && airflow initdb && alembic upgrade head"
       containers:
-        # - name: git-sync
-        #   image: gcr.io/google-containers/git-sync-amd64:v2.0.5
-        #   imagePullPolicy: Always
-        #   volumeMounts:
-        #     - name: checkout
-        #       mountPath: /git
-        #   env:
-        #     - name: GIT_SYNC_REPO
-        #       value: https://github.com/grantnicholas/testdags.git
-        #     - name: GIT_SYNC_DEST
-        #       # value: {{ template "airflow.fullname" . }}-dags
-        #       value: checkout
-        #     - name: GIT_SYNC_ONE_TIME
-        #       value: "true"
-        #     # - name: GIT_SYNC_ROOT
-        #     #   value: gittest
         - name: {{ .Chart.Name }}-web
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -104,8 +82,6 @@ spec:
             subPath: airflow.cfg
           - name: {{ template "airflow.fullname" . }}-dags
             mountPath: /root/airflow/dags
-          # - name: checkout
-          #   mountPath: /checkout
           livenessProbe:
             initialDelaySeconds: 5
             timeoutSeconds: 5
@@ -140,8 +116,6 @@ spec:
             subPath: airflow.cfg
           - name: {{ template "airflow.fullname" . }}-dags
             mountPath: /root/airflow/dags
-          # - name: checkout
-          #   mountPath: /checkout
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
   {{ toYaml .Values.imagePullSecrets | indent 8 }}
