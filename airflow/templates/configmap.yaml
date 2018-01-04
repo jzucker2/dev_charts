@@ -27,9 +27,11 @@ data:
     delete_worker_pods = True
     git_repo = {{ .Values.git.repo }}
     git_branch = {{ .Values.git.branch }}
-    git_user = {{ .Values.git.user }}
-    git_password = {{ .Values.git.password }}
+    git_user = $GITHUB_USERNAME
+    git_password = $GITHUB_PASSWORD
     git_subpath = {{ .Values.git.subpath }}
 
     [kubernetes_secrets]
     SQL_ALCHEMY_CONN = airflow-secrets=sql_alchemy_conn
+    GITHUB_USERNAME = gitsecret=username
+    GITHUB_PASSWORD = gitsecret=password

@@ -17,8 +17,6 @@ imagePullSecrets:
 git:
   repo: "https://github.com/pubnub/caravan.git"
   branch: "master"
-  user: "jzucker2"
-  password: "211824037fac70c4070df7b390e0c0dad5a80900"
   subpath: "dags"
 
 
