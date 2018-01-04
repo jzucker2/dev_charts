@@ -82,6 +82,16 @@ spec:
               secretKeyRef:
                 name: airflow-secrets
                 key: sql_alchemy_conn
+          - name: GIT_SYNC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: gitsecret
+                key: username
+          - name: GIT_SYNC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: gitsecret
+                key: password
           volumeMounts:
           - name: airflow-configmap
             mountPath: /root/airflow/airflow.cfg
@@ -116,6 +126,16 @@ spec:
               secretKeyRef:
                 name: airflow-secrets
                 key: sql_alchemy_conn
+          - name: GIT_SYNC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: gitsecret
+                key: username
+          - name: GIT_SYNC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: gitsecret
+                key: password
           volumeMounts:
           - name: airflow-configmap
             mountPath: /root/airflow/airflow.cfg
