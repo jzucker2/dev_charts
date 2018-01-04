@@ -15,15 +15,33 @@ spec:
         release: {{ .Release.Name }}
     spec:
       initContainers:
+        - name: git-sync
+          image: gcr.io/google-containers/git-sync-amd64:v2.0.5
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: checkout
+              mountPath: /git
+          env:
+            - name: GIT_SYNC_REPO
+              value: https://github.com/grantnicholas/testdags.git
+            - name: GIT_SYNC_DEST
+              value: checkedoutdags
+              # value: checkout
+            - name: GIT_SYNC_ONE_TIME
+              value: "true"
+            # - name: GIT_SYNC_ROOT
+            #   value: gittest
         - name: {{ .Chart.Name }}-init
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
-          - name: {{ template "airflow.fullname" . }}-configmap
+          - name: airflow-configmap
             mountPath: /root/airflow/airflow.cfg
             subPath: airflow.cfg
           - name: {{ template "airflow.fullname" . }}-dags
             mountPath: /root/airflow/dags
+          - name: checkout
+            mountPath: /checkout
           env:
           - name: SQL_ALCHEMY_CONN
             valueFrom:
@@ -34,8 +52,24 @@ spec:
             - "bash"
           args:
             - "-cx"
-            - "cd /usr/local/lib/python2.7/dist-packages/airflow && cp -R example_dags/* /root/airflow/dags/ && airflow initdb && alembic upgrade head"
+            - "cd /usr/local/lib/python2.7/dist-packages/airflow && cp -R /checkout/checkedoutdags/* /root/airflow/dags/ && airflow initdb && alembic upgrade head"
       containers:
+        # - name: git-sync
+        #   image: gcr.io/google-containers/git-sync-amd64:v2.0.5
+        #   imagePullPolicy: Always
+        #   volumeMounts:
+        #     - name: checkout
+        #       mountPath: /git
+        #   env:
+        #     - name: GIT_SYNC_REPO
+        #       value: https://github.com/grantnicholas/testdags.git
+        #     - name: GIT_SYNC_DEST
+        #       # value: {{ template "airflow.fullname" . }}-dags
+        #       value: checkout
+        #     - name: GIT_SYNC_ONE_TIME
+        #       value: "true"
+        #     # - name: GIT_SYNC_ROOT
+        #     #   value: gittest
         - name: {{ .Chart.Name }}-web
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -54,11 +88,13 @@ spec:
                 name: airflow-secrets
                 key: sql_alchemy_conn
           volumeMounts:
-          - name: {{ template "airflow.fullname" . }}-configmap
+          - name: airflow-configmap
             mountPath: /root/airflow/airflow.cfg
             subPath: airflow.cfg
           - name: {{ template "airflow.fullname" . }}-dags
             mountPath: /root/airflow/dags
+          # - name: checkout
+          #   mountPath: /checkout
           livenessProbe:
             initialDelaySeconds: 5
             timeoutSeconds: 5
@@ -88,11 +124,13 @@ spec:
                 name: airflow-secrets
                 key: sql_alchemy_conn
           volumeMounts:
-          - name: {{ template "airflow.fullname" . }}-configmap
+          - name: airflow-configmap
             mountPath: /root/airflow/airflow.cfg
             subPath: airflow.cfg
           - name: {{ template "airflow.fullname" . }}-dags
             mountPath: /root/airflow/dags
+          # - name: checkout
+          #   mountPath: /checkout
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
   {{ toYaml .Values.imagePullSecrets | indent 8 }}
@@ -105,7 +143,8 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-      - name: {{ template "airflow.fullname" . }}-configmap
+      - name: airflow-configmap
         configMap:
-          name: {{ template "airflow.fullname" . }}-configmap
-
+          name: airflow-configmap
+      - name: checkout
+        emptyDir: {}
