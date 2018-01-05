@@ -24,14 +24,13 @@ data:
     airflow_configmap = airflow-configmap
     worker_container_repository = {{ .Values.image.repository }}
     worker_container_tag = {{ .Values.image.tag }}
-    delete_worker_pods = True
+    delete_worker_pods = False
     git_repo = {{ .Values.git.repo }}
     git_branch = {{ .Values.git.branch }}
     git_user = $GIT_SYNC_USERNAME
     git_password = $GIT_SYNC_PASSWORD
-    git_subpath = {{ .Values.git.subpath }}
 
     [kubernetes_secrets]
     SQL_ALCHEMY_CONN = airflow-secrets=sql_alchemy_conn
-    GITHUB_USERNAME = gitsecret=username
-    GITHUB_PASSWORD = gitsecret=password
+    GIT_SYNC_USERNAME = gitsecret=username
+    GIT_SYNC_PASSWORD = gitsecret=password
