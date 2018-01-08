@@ -63,7 +63,7 @@ spec:
             - "bash"
           args:
             - "-cx"
-            - "cd /usr/local/lib/python2.7/dist-packages/airflow && cp -R /checkout/checkedoutdags/* /root/airflow/dags/ && airflow initdb && alembic upgrade head"
+            - "cd /usr/local/lib/python2.7/dist-packages/airflow && cp -R /checkout/checkedoutdags/dags/* /root/airflow/dags/ && airflow initdb && alembic upgrade head"
       containers:
         - name: {{ .Chart.Name }}-web
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
