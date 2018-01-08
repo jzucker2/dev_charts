@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "airflow.fullname" . }}-dags
+  name: airflow-dags
   labels:
     app: {{ template "airflow.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

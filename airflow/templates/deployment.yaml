@@ -49,7 +49,7 @@ spec:
           - name: airflow-configmap
             mountPath: /root/airflow/airflow.cfg
             subPath: airflow.cfg
-          - name: {{ template "airflow.fullname" . }}-dags
+          - name: airflow-dags
             mountPath: /root/airflow/dags
           - name: checkout
             mountPath: /checkout
@@ -63,7 +63,7 @@ spec:
             - "bash"
           args:
             - "-cx"
-            - "cd /usr/local/lib/python2.7/dist-packages/airflow && cp -R /checkout/checkedoutdags/dags/* /root/airflow/dags/ && airflow initdb && alembic upgrade head"
+            - "cd /usr/local/lib/python2.7/dist-packages/airflow && cp -R /checkout/checkedoutdags/* /root/airflow/dags/ && airflow initdb && alembic upgrade head"
       containers:
         - name: {{ .Chart.Name }}-web
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -96,7 +96,7 @@ spec:
           - name: airflow-configmap
             mountPath: /root/airflow/airflow.cfg
             subPath: airflow.cfg
-          - name: {{ template "airflow.fullname" . }}-dags
+          - name: airflow-dags
             mountPath: /root/airflow/dags
           livenessProbe:
             initialDelaySeconds: 5
@@ -140,17 +140,17 @@ spec:
           - name: airflow-configmap
             mountPath: /root/airflow/airflow.cfg
             subPath: airflow.cfg
-          - name: {{ template "airflow.fullname" . }}-dags
+          - name: airflow-dags
             mountPath: /root/airflow/dags
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
   {{ toYaml .Values.imagePullSecrets | indent 8 }}
       {{- end }}
       volumes:
-      - name: {{ template "airflow.fullname" . }}-dags
+      - name: airflow-dags
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (printf "%s-dags" (include "airflow.fullname" .)) }}
+          claimName: {{ .Values.persistence.existingClaim | default "airflow-dags" }}
       {{- else }}
         emptyDir: {}
       {{- end }}

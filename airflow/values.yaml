@@ -34,7 +34,7 @@ ingress:
 
 
 persistence:
-  enabled: false
+  enabled: true
   size: 1Gi
   storageClass: standard
 
