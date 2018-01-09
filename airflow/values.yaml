@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: artifactnub1-docker-local.jfrog.io/pubnub/pnairflow
-  tag: 0.1.5
+  tag: 0.1.6
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
