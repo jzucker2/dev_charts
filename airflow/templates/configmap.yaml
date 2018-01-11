@@ -35,3 +35,5 @@ data:
     SQL_ALCHEMY_CONN = airflow-secrets=sql_alchemy_conn
     GIT_SYNC_USERNAME = gitsecret=username
     GIT_SYNC_PASSWORD = gitsecret=password
+    AIRFLOW_CONN_PORTAL_DB_URI = portaldbsecret=portal_mysql_conn
+    AIRFLOW_CONN_OVERMIND_DB_URI = overminddbsecret=overmind_mysql_conn
