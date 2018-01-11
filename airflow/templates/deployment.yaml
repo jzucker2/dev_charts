@@ -59,16 +59,6 @@ spec:
               secretKeyRef:
                 name: airflow-secrets
                 key: sql_alchemy_conn
-          - name: AIRFLOW_CONN_PORTAL_DB_URI
-            valueFrom:
-              secretKeyRef:
-                name: portaldbsecret
-                key: portal_mysql_conn
-          - name: AIRFLOW_CONN_OVERMIND_DB_URI
-            valueFrom:
-              secretKeyRef:
-                name: overminddbsecret
-                key: overmind_mysql_conn
           command:
             - "bash"
           args:
@@ -102,16 +92,6 @@ spec:
               secretKeyRef:
                 name: gitsecret
                 key: password
-          - name: AIRFLOW_CONN_PORTAL_DB_URI
-            valueFrom:
-              secretKeyRef:
-                name: portaldbsecret
-                key: portal_mysql_conn
-          - name: AIRFLOW_CONN_OVERMIND_DB_URI
-            valueFrom:
-              secretKeyRef:
-                name: overminddbsecret
-                key: overmind_mysql_conn
           volumeMounts:
           - name: airflow-configmap
             mountPath: /root/airflow/airflow.cfg
@@ -156,16 +136,6 @@ spec:
               secretKeyRef:
                 name: gitsecret
                 key: password
-          - name: AIRFLOW_CONN_PORTAL_DB_URI
-            valueFrom:
-              secretKeyRef:
-                name: portaldbsecret
-                key: portal_mysql_conn
-          - name: AIRFLOW_CONN_OVERMIND_DB_URI
-            valueFrom:
-              secretKeyRef:
-                name: overminddbsecret
-                key: overmind_mysql_conn
           volumeMounts:
           - name: airflow-configmap
             mountPath: /root/airflow/airflow.cfg
